@@ -1,18 +1,9 @@
 import React from 'react';
-import Select from 'react-select';
 import { Navbar } from 'react-bootstrap';
 import {Nav} from 'react-bootstrap';
 import { Router, Route, Link, browserHistory, IndexRoute } from 'react-router';
 import axios from 'axios';
 
- const ClaimStatus = [
-  { label: "Pending", value: 1 },
-  { label: "Paid", value: 2 },
-  { label: "Submitted", value: 3 },
-  { label: "Recieved", value: 4 },
-  { label: "Denied", value: 5 },
-  { label: "Rejected", value: 6 },
- ];
 
 class UpdateClaim extends React.Component {
   constructor(props){
@@ -35,7 +26,7 @@ class UpdateClaim extends React.Component {
       claimstartdate:'',
       claimenddate:'',
       errors: {},
-      username:''
+      username: localStorage.getItem('loggedinUser')
      
 };
 
@@ -143,7 +134,12 @@ validateForm() {
      errors["claimenddate"] = "*Please select a Claim End Date.";
    }
   
- 
+   const letters = /^[0-9a-zA-Z]+$/;
+      if(this.state.claimno != "" && !this.state.claimno.match(letters))
+      {
+        formIsValid = false;
+        errors["claiminvalid"] = "*Please select a valid Claim Number.";
+      }
   
   
   this.setState({
@@ -154,7 +150,6 @@ validateForm() {
 }
 
   render() {     
-    const { selectedOption } = this.state;
     console.log(this.state.data);
     let h2Style = {
       color: 'White',
@@ -201,9 +196,10 @@ validateForm() {
         <div className="form-group">
           <label className="control-label col-sm-4" htmlFor="claimno">Claim Number:</label>
           <div className="col-sm-10">
-            <input type="text" defaultValue={this.state.claimno} className="form-control" id="claimno" name="claimno"  onChange={this.handleChange}/>
+            <input type="text" maxLength="9" defaultValue={this.state.claimno}  className="form-control" id="claimno" name="claimno"  onChange={this.handleChange}/>
           </div>
           <div className="errorMsg">{this.state.errors.claimno}</div>
+          <div className="errorMsg">{this.state.errors.claiminvalid}</div>
         </div>
          <div className="form-group">
             <label className="control-label col-sm-4" htmlFor="claimtype">Claim Type:</label>
@@ -223,7 +219,7 @@ validateForm() {
           <div className="form-group">
             <label className="control-label col-sm-4" htmlFor="claimpgm">Claim Program:</label>
             <div className="col-sm-10">
-              <input type="text" defaultValue={this.state.claimdesc} className="form-control" id="claimpgm" name="claimpgm"  onChange={this.handleChange}/>
+              <input type="text"  maxLength="20" defaultValue={this.state.claimdesc} className="form-control" id="claimpgm" name="claimpgm"  onChange={this.handleChange}/>
             </div>
             <div className="errorMsg">{this.state.errors.claimpgm}</div>
           </div>

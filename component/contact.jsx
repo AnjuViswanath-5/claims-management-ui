@@ -14,7 +14,7 @@ class ContactComponent extends React.Component {
   var today = new Date(),
   date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         this.state = {
-            username:this.props.location.state,
+          username: localStorage.getItem('loggedinUser'),
             date:date
           }
     

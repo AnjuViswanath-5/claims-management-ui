@@ -3,10 +3,9 @@ import { Navbar } from 'react-bootstrap';
 import {Nav} from 'react-bootstrap';
 import {Table} from  'react-bootstrap';
 import axios from 'axios';
-import { Router, Route, Link, browserHistory, IndexRoute  } 
+import {  Link, browserHistory  } 
 from 'react-router';
-import LoginComponent from './login.jsx';
-import {store} from '../claimlistredux.js';
+
 
 
 class ViewClaimSummary extends React.Component {
@@ -21,10 +20,10 @@ class ViewClaimSummary extends React.Component {
   this.state = {
     claimList: [],
     date: date,
-    username:this.props.location.state
+    username: localStorage.getItem('loggedinUser'),
 };
 
-};
+}
 
 
  //Load claim summary data from claims json
@@ -33,10 +32,6 @@ class ViewClaimSummary extends React.Component {
         axios.get(`http://localhost:7000/claims/list`)
           .then(res => {
             const claims = res.data;
-            store.dispatch({type:'GET_CLAIMS',payload:claims});
-            store.subscribe(()=>
-            this.setState({ claims :store.getState()})
-            );
             const claimList = claims.map(u =>
             
                 <tr>

@@ -3,6 +3,7 @@ import { Navbar } from 'react-bootstrap';
 import {Nav} from 'react-bootstrap';
 import { Router, Route, Link, browserHistory, IndexRoute, Redirect  } from 'react-router';
 import axios from 'axios';
+import { Logger } from 'react-logger-lib';
 
 class LoginComponent extends React.Component {
 
@@ -38,6 +39,7 @@ class LoginComponent extends React.Component {
                 fields["username"] = "";
                 fields["password"] = "";
                 this.setState({fields:fields});
+                localStorage.setItem('loggedinUser', this.state.fields["username"]);
               
                // browserHistory.push('viewclaimsummary')
                browserHistory.push({
@@ -54,6 +56,7 @@ class LoginComponent extends React.Component {
                 const userList = res.data;
                 this.setState({ userList });
                })
+               Logger.of('App.LoginComponent.componentDidMount').warn('state=', this.state);
           }
 
           validateUser()
@@ -82,6 +85,7 @@ class LoginComponent extends React.Component {
             if (!fields["username"]) {
               formIsValid = false;
               errors["username"] = "*Please enter your username.";
+               Logger.of('App.LoginComponent.componentDidMount').warn('state=', this.state);
             } 
                 
             if (!fields["password"]) {
@@ -90,12 +94,15 @@ class LoginComponent extends React.Component {
             }
             
             validUser=this.validateUser();
-              if (validUser==false)
+              if (formIsValid == true && validUser == false)
               {
                   formIsValid = false;
+                  errors["invaliduser"] = "Invalid Credentials";
+                  console.log('Is invalid user' + validUser);
               }
-              errors["invaliduser"] = "Invalid Credentials";
+              
               console.log('Is valid user' + validUser);
+              Logger.of('Login.componentDidMount').warn('Invalid userSS');
             
             
             this.setState({
